@@ -5,6 +5,7 @@ const Campsite = require('./models/campsite');
 const url = 'mongodb://localhost:27017/nucampsite';
 const connect = mongoose.connect(url, {
     useCreateIndex: true,
+    useFindAndModify: false,
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -14,19 +15,38 @@ connect.then(() => {
 
     console.log('Connected correctly to server');
 
-//Create instance of new document with model named "Campsite"
- //.create() auto saves the object that is created
+//Create instance of new document with model named "Campsite" -> create() auto saves the object that is created
  Campsite.create ({ 
         name: 'React Lake Campground',
         description: 'test'
     })
     .then(campsite => {
         console.log(campsite);
-//Use find method to look for all docs instantiate from the Campsite model. Return found docs in an array of objects
-        return Campsite.find();
+
+//Update campsite doc
+        return Campsite.findByIdAndUpdate(campsite._id,
+            {
+                $set: { description: 'Updated Test Document'}
+            }, 
+            {
+//Return updated doc instead of original doc
+                new: true
+            });
     })
-    .then(campsites => {
-        console.log(campsites);
+    .then(campsite => {
+        console.log(campsite);
+        
+        campsite.comments.push({
+            rating: 5, 
+            text: "What a maginficent view!",
+            author: "Tinus Lorvaldes"
+        });
+
+        return campsite.save();
+    })
+
+    .then(campsite => {
+        console.log(campsite);
 //Delete all docs from Campsite model
         return Campsite.deleteMany();
     })
