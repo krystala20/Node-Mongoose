@@ -14,14 +14,12 @@ connect.then(() => {
 
     console.log('Connected correctly to server');
 
-//Create instance of new document named "newCampsite" with model named "Campsite"
-    const newCampsite = new Campsite({
+//Create instance of new document with model named "Campsite"
+ //.create() auto saves the object that is created
+ Campsite.create ({ 
         name: 'React Lake Campground',
         description: 'test'
-    });
-
-//Save "newCampsite" document to DB.
-    newCampsite.save()
+    })
     .then(campsite => {
         console.log(campsite);
 //Use find method to look for all docs instantiate from the Campsite model. Return found docs in an array of objects
